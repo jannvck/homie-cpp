@@ -18,6 +18,7 @@ namespace homie {
 		virtual std::string get_unit() const = 0;
 		virtual datatype get_datatype() const = 0;
 		virtual std::string get_format() const = 0;
+		virtual bool is_retained() const = 0;
 
 		virtual std::string get_value(int64_t node_idx) const = 0;
 		virtual void set_value(int64_t node_idx, const std::string& value) = 0;
@@ -37,6 +38,7 @@ namespace homie {
 			return enum_from_string<datatype>(att.empty() ? "string" : att);
 		}
 		virtual std::string get_format() const { return get_attribute("format"); }
+		virtual bool is_retained() const { return get_attribute("retained") == "true"; }
 	};
 	typedef std::shared_ptr<property> property_ptr;
 	typedef std::shared_ptr<const property> const_property_ptr;

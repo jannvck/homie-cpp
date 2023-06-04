@@ -121,6 +121,7 @@ namespace homie {
 					properties += property->get_id() + ",";
 					this->publish_property_attribute(node, property, "$name", property->get_name());
 					this->publish_property_attribute(node, property, "$settable", property->is_settable() ? "true" : "false");
+					this->publish_property_attribute(node, property, "$retained", property->is_retained() ? "true" : "false");
 					this->publish_property_attribute(node, property, "$unit", property->get_unit());
 					this->publish_property_attribute(node, property, "$datatype", enum_to_string(property->get_datatype()));
 					this->publish_device_attribute(node->get_id() + "/" + property->get_id() + "/$format", property->get_format());
@@ -159,8 +160,12 @@ namespace homie {
 			this->publish_device_attribute("$state", enum_to_string(dev->get_state()));
 		}
 
+		void publish_device_attribute(const std::string& attribute, const std::string& value, const bool retained) {
+			mqtt.publish(base_topic + dev->get_id() + "/" + attribute, value, 1, retained);
+		}
+
 		void publish_device_attribute(const std::string& attribute, const std::string& value) {
-			mqtt.publish(base_topic + dev->get_id() + "/" + attribute, value, 1, true);
+			publish_device_attribute(attribute, value, true);
 		}
 
 		void publish_node_attribute(const_node_ptr node, const std::string& attribute, const std::string& value) {
@@ -181,17 +186,17 @@ namespace homie {
 			if (!prop) return;
 			if (node->is_array()) {
 				if (idx != nullptr) {
-					this->publish_device_attribute(node->get_id() + "_" + std::to_string(*idx) + "/" + prop->get_id(), prop->get_value(*idx));
+					this->publish_device_attribute(node->get_id() + "_" + std::to_string(*idx) + "/" + prop->get_id(), prop->get_value(*idx), prop->is_retained());
 				}
 				else {
 					auto range = node->array_range();
 					for (auto i = range.first; i <= range.second; i++) {
-						this->publish_device_attribute(node->get_id() + "_" + std::to_string(i) + "/" + prop->get_id(), prop->get_value(i));
+						this->publish_device_attribute(node->get_id() + "_" + std::to_string(i) + "/" + prop->get_id(), prop->get_value(i), prop->is_retained());
 					}
 				}
 			}
 			else {
-				this->publish_device_attribute(node->get_id() + "/" + prop->get_id(), prop->get_value());
+				this->publish_device_attribute(node->get_id() + "/" + prop->get_id(), prop->get_value(), prop->is_retained());
 			}
 		}
 	public:
@@ -217,6 +222,12 @@ namespace homie {
 		void notify_property_changed(const std::string& snode, const std::string& sproperty, int64_t idx) {
 			notify_property_changed_impl(snode, sproperty, &idx);
 		}
+
+		void notify_stats_changed() {
+			for (auto& stat : dev->get_stats()) {
+				this->publish_device_attribute("$stats/" + stat, dev->get_stat(stat));
+			}
+		};
 
 		void set_event_handler(client_event_handler* hdl) {
 			handler = hdl;
