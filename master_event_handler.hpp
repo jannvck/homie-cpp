@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "device.h"
+#include "device.hpp"
 
 namespace homie {
 	struct master_event_handler {

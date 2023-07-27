@@ -1,8 +1,8 @@
 #pragma once
-#include "mqtt_client.h"
-#include "device.h"
-#include "utils.h"
-#include "master_event_handler.h"
+#include "mqtt_client.hpp"
+#include "device.hpp"
+#include "utils.hpp"
+#include "master_event_handler.hpp"
 #include <set>
 #include <map>
 
@@ -65,7 +65,7 @@ namespace homie {
 				return prop;
 			}
 
-			// Geerbt über node
+			// Geerbt ï¿½ber node
 			virtual device_ptr get_device() override {
 				return device.lock();
 			}
@@ -137,7 +137,7 @@ namespace homie {
 				return node;
 			}
 
-			// Geerbt über device
+			// Geerbt ï¿½ber device
 			virtual std::string get_id() const override { return id; }
 			virtual std::set<std::string> get_nodes() const override
 			{

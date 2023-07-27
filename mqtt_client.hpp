@@ -1,5 +1,5 @@
 #pragma once
-#include "mqtt_event_handler.h"
+#include "mqtt_event_handler.hpp"
 
 namespace homie {
 	struct mqtt_client {

@@ -3,9 +3,9 @@
 #include <memory>
 #include <vector>
 #include <chrono>
-#include "device_state.h"
-#include "node.h"
-#include "utils.h"
+#include "device_state.hpp"
+#include "node.hpp"
+#include "utils.hpp"
 
 namespace homie {
 	struct device {
@@ -28,7 +28,6 @@ namespace homie {
 		virtual std::string get_attribute(const std::string& id) const = 0;
 		virtual void set_attribute(const std::string& id, const std::string& value) = 0;
 	};
-
 	struct basic_device : public device {
 		// Geerbt über device
 		virtual std::string get_name() const override { return get_attribute("name"); }

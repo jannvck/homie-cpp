@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "datatype.h"
+#include <set>
+#include <functional>
+#include "datatype.hpp"
 
 namespace homie {
 	struct node;

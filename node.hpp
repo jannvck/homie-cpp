@@ -2,7 +2,8 @@
 #include <string>
 #include <memory>
 #include <set>
-#include "property.h"
+#include <map>
+#include "property.hpp"
 
 namespace homie {
 	struct device;
