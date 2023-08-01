@@ -27,6 +27,11 @@ namespace homie {
             std::string brokerHost;
             int brokerPort;
             homie::mqtt_event_handler* eventHandler;
+#ifdef HOMIE_MQTT_USE_TLS
+			WiFiClientSecure* wifiClient;
+#else
+			WiFiClient* wifiClient;
+#endif
             struct Message {
                 std::string topic;
                 std::string payload;
@@ -44,7 +49,7 @@ namespace homie {
 #ifdef ESP32
                 const char* brokerCACert,
 #elif defined(ESP8266)
-                const BearSSL::X509List* x509 = new BearSSL::X509List(ca_crt, ca_crt_size),
+                const BearSSL::X509List* x509,
 #endif
                 WiFiClientSecure* wifiClient = new WiFiClientSecure()) {
 #else
@@ -54,6 +59,7 @@ namespace homie {
                     this->brokerHost = brokerHost;
                     this->brokerPort = brokerPort;
                     mqtt_client = new MqttClient(wifiClient);
+					this->wifiClient = wifiClient;
                     taskMaintain = new Task(maintenanceInterval * TASK_MILLISECOND, TASK_FOREVER, [this]{
                         if (mqtt_client->connected()) {
                             mqtt_client->poll();
@@ -167,7 +173,7 @@ namespace homie {
 #ifdef ESP32
                 const char* brokerCACert,
 #elif defined(ESP8266)
-                const BearSSL::X509List* x509 = new BearSSL::X509List(ca_crt, ca_crt_size),
+                const BearSSL::X509List* x509,
 #endif
                 WiFiClientSecure* wifiClient = new WiFiClientSecure())
 #else
@@ -211,7 +217,7 @@ namespace homie {
 #ifdef ESP32
                 const char* brokerCACert,
 #elif defined(ESP8266)
-                const BearSSL::X509List* x509 = new BearSSL::X509List(ca_crt, ca_crt_size),
+                const BearSSL::X509List* x509,
 #endif
                 WiFiClientSecure* wifiClient = new WiFiClientSecure())
 #else
