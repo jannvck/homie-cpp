@@ -178,10 +178,10 @@ namespace homie {
             if (callback) {
                 callback(value);
             }
-            auto client = ((generic_device*) get_node()->get_device().get())->client;
-            if (client) {
-                client->notify_property_changed(get_node()->get_id(), get_id());
-            }
+            // auto client = ((generic_device*) get_node()->get_device().get())->client;
+            // if (client) {
+            //     client->notify_property_changed(get_node()->get_id(), get_id());
+            // }
         }
 
         virtual std::set<std::string> get_attributes() const override {
